@@ -1,0 +1,111 @@
+<html>
+<head>
+    <style>
+        body {
+		    background-color: #abf7b1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+           
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #000;
+            font-size: 2em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .cell:hover {
+            background-color: blue;
+        }
+    </style>
+    <title>Tic-Tac-Toe</title>
+</head>
+<body>
+
+<div id="board" class="board">
+    <div class="cell" data-index="0"></div>
+    <div class="cell" data-index="1"></div>
+    <div class="cell" data-index="2"></div>
+    <div class="cell" data-index="3"></div>
+    <div class="cell" data-index="4"></div>
+    <div class="cell" data-index="5"></div>
+    <div class="cell" data-index="6"></div>
+    <div class="cell" data-index="7"></div>
+    <div class="cell" data-index="8"></div>
+</div>
+
+<script>
+    const board = document.getElementById('board');
+    const cells = document.querySelectorAll('.cell');
+    let currentPlayer = 'X';
+    let gameBoard = ['', '', '', '', '', '', '', '', ''];
+    let gameActive = true;
+
+    board.addEventListener('click', handleCellClick);
+
+    function handleCellClick(event) {
+        const clickedCell = event.target;
+        const cellIndex = clickedCell.dataset.index;
+
+        if (gameBoard[cellIndex] === '' && gameActive) {
+            gameBoard[cellIndex] = currentPlayer;
+            updateCell(clickedCell);
+            checkWinner();
+            switchPlayer();
+        }
+    }
+
+    function updateCell(cell) {
+        const cellIndex = cell.dataset.index;
+        cell.textContent = gameBoard[cellIndex];
+    }
+
+    function switchPlayer() {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    }
+
+    function checkWinner() {
+        const winPatterns = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], 
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], 
+            [0, 4, 8], [2, 4, 6]             
+        ];
+
+        for (const pattern of winPatterns) {
+            const [a, b, c] = pattern;
+            if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
+                announceWinner(gameBoard[a]);
+                gameActive = false;
+            }
+        }
+
+        if (!gameBoard.includes('') && gameActive) {
+            announceDraw();
+            gameActive = false;
+        }
+    }
+
+    function announceWinner(winner) {
+        alert(`Player ${winner} wins!`);
+    }
+
+    function announceDraw() {
+        alert('It\'s a draw!');
+    }
+</script>
+
+</body>
+</html>
